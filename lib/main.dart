@@ -1,9 +1,11 @@
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'dart:convert';
 
 import 'package:restaurants_app/inst.dart';
+import 'package:restaurants_app/inst_view_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -57,11 +59,11 @@ class _InstListState extends State<InstList> {
                           style: TextStyle(fontSize: 18),
                         ),
                       ),
-                      instCard(snapshot, index)
+                      instCard(snapshot, index, context)
                     ],
                   );
                 }
-                return instCard(snapshot, index);
+                return instCard(snapshot, index, context);
               });
         } else if (snapshot.hasError) {
           return Text('Error');
@@ -92,7 +94,7 @@ class _InstListState extends State<InstList> {
   }
 }
 
-Widget instCard(AsyncSnapshot<Inst> snapshot, index) {
+Widget instCard(AsyncSnapshot<Inst> snapshot, index, context) {
   return Container(
     padding: EdgeInsets.all(10),
     child: Column(
@@ -101,8 +103,24 @@ Widget instCard(AsyncSnapshot<Inst> snapshot, index) {
         Row(
           children: <Widget>[
             Expanded(
-              child: Image.network(//wrapper expanded
-                  'https://www.avtobanket.ru/upload/image_gallery/1069/510x340_crop_b633d5bbd26aeaed3214b3a0a4246fe9.jpg'),
+              child: GestureDetector(
+                onTap: () {
+                  print('click to img');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => InstViewScreen(int.parse(snapshot.data.insts[index].id)), //instId: null
+                      // settings: RouteSettings(
+                      //   arguments: int.parse(snapshot.data.insts[index].id)
+                      // ),
+                    ),
+                  );
+                },
+                child: Image.network(
+                  //wrapper expanded
+                  'https://www.avtobanket.ru/upload/image_gallery/1069/510x340_crop_b633d5bbd26aeaed3214b3a0a4246fe9.jpg',
+                ),
+              ),
             )
           ],
         ),
@@ -150,3 +168,4 @@ class InstApi {
     return Inst.fromJson(json.decode(responce.body));
   }
 }
+
