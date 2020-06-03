@@ -13,7 +13,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   static final String restaurantsUrl =
-      'https://www.avtobanket.ru/restorany-dlya-svadby/?get_map_insts=true';
+      'https://www.avtobanket.ru/restorany-dlya-svadby/?get_all_insts=true';
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +118,7 @@ Widget instCard(AsyncSnapshot<Inst> snapshot, index, context) {
                 },
                 child: Image.network(
                   //wrapper expanded
-                  'https://www.avtobanket.ru/upload/image_gallery/1069/510x340_crop_b633d5bbd26aeaed3214b3a0a4246fe9.jpg',
+                  'https://www.avtobanket.ru' + snapshot.data.insts[index].instMainPhoto,
                 ),
               ),
             )

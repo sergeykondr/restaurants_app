@@ -5,7 +5,6 @@ class InstViewScreen extends StatelessWidget {
 
   InstViewScreen(this.instId);
 
-
   @override
   Widget build(BuildContext context) {
     //final int instId = ModalRoute.of(context).settings.arguments;
