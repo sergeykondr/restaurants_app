@@ -159,7 +159,7 @@ Widget instCard(AsyncSnapshot<Inst> snapshot, index, context) {
 
 class InstApi {
   Future<Inst> fetchInst() async {
-    await Future.delayed(const Duration(seconds: 2));
+    //await Future.delayed(const Duration(seconds: 2));
     final responce = await http
         .post(MyApp.restaurantsUrl, headers: {'fromapp': 'flutter/app'});
     if (responce.statusCode != 200) {
