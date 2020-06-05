@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restaurants_app/models/inst_view.dart';
 
 class InstViewScreen extends StatelessWidget {
   final int instId;

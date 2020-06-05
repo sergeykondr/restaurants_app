@@ -1,19 +1,16 @@
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'dart:convert';
 
-import 'package:restaurants_app/inst.dart';
+import 'package:restaurants_app/models/inst_list.dart';
 import 'package:restaurants_app/inst_view_screen.dart';
+import 'package:restaurants_app/api.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  static final String restaurantsUrl =
-      'https://www.avtobanket.ru/restorany-dlya-svadby/?get_all_insts=true';
+  
 
   @override
   Widget build(BuildContext context) {
@@ -157,15 +154,4 @@ Widget instCard(AsyncSnapshot<Inst> snapshot, index, context) {
   );
 }
 
-class InstApi {
-  Future<Inst> fetchInst() async {
-    //await Future.delayed(const Duration(seconds: 2));
-    final responce = await http
-        .post(MyApp.restaurantsUrl, headers: {'fromapp': 'flutter/app'});
-    if (responce.statusCode != 200) {
-      throw Exception('Error responce: ${responce.reasonPhrase}');
-    }
-    return Inst.fromJson(json.decode(responce.body));
-  }
-}
 
