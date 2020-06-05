@@ -3,6 +3,7 @@ class InstView {
   String address;
   String lat;
   String lon;
+  String minBanquetPrice;
   String metros;
   String capacity;
   String phones;
@@ -57,6 +58,7 @@ class InstView {
   InstView.fromJson(Map<String, dynamic> json) {
     name = json['name'];
     address = json['address'];
+    minBanquetPrice = json['min_banquet_price'];
     lat = json['lat'];
     lon = json['lon'];
     metros = json['metros'];
@@ -97,6 +99,7 @@ class InstView {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['name'] = this.name;
     data['address'] = this.address;
+    data['min_banquet_price'] = this.minBanquetPrice;
     data['lat'] = this.lat;
     data['lon'] = this.lon;
     data['metros'] = this.metros;

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:restaurants_app/models/inst_list.dart';
 import 'package:restaurants_app/inst_view_screen.dart';
 import 'package:restaurants_app/api.dart';
+
+import 'helper_widgets.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -37,11 +39,11 @@ class InstList extends StatefulWidget {
 class _InstListState extends State<InstList> {
   @override
   Widget build(BuildContext context) {
-    final Future<Inst> instList = InstApi().fetchInst();
+    final Future<Inst> instsList = Api().fetchInstsList();
 
     return FutureBuilder<Inst>(
-      future: instList,
-      builder: (context, snapshot) {
+      future: instsList,
+      builder: (context, AsyncSnapshot<Inst> snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
               itemCount: snapshot.data.insts.length,
@@ -65,30 +67,12 @@ class _InstListState extends State<InstList> {
         } else if (snapshot.hasError) {
           return Text('Error');
         }
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SpinKitWave(
-                color: Colors.black87,
-                size: 60,
-                type: SpinKitWaveType.start,
-                itemCount: 6,
-                duration: Duration(milliseconds: 1500),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 30, top: 30),
-                child: Text(
-                  'Идет загрузка списка ресторанов...',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-            ],
-          ),
-        );
+        return loadingSpin();
       },
     );
   }
+
+  
 }
 
 Widget instCard(AsyncSnapshot<Inst> snapshot, index, context) {
