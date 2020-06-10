@@ -12,8 +12,6 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -71,9 +69,7 @@ class _InstListState extends State<InstList> {
         return loadingSpin();
       },
     );
-  }
-
-  
+  } 
 }
 
 Widget instCard(AsyncSnapshot<Inst> snapshot, index, context) {
@@ -138,5 +134,3 @@ Widget instCard(AsyncSnapshot<Inst> snapshot, index, context) {
     ),
   );
 }
-
-
