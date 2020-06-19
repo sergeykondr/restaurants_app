@@ -154,7 +154,7 @@ class Halls {
     maxCapacityBanquetCloser = json['max_capacity_banquet_closer'];
     rent = json['rent'];
     totalCostBanquet = json['total_cost_banquet'];
-    image = json['image'].cast<String>();
+    image = json['image'] != null ? json['image'].cast<String>(): null;
   }
 
   Map<String, dynamic> toJson() {

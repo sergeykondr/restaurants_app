@@ -7,6 +7,7 @@ import 'models/inst_view.dart';
 
 
 class Api {
+  static final String domenUrl     = 'https://www.avtobanket.ru';
   static final String instsListUrl = 'https://www.avtobanket.ru/restorany-dlya-svadby/?get_all_insts=true';
   static final String instByIdUrl  = 'https://www.avtobanket.ru/insts/inst/view?get_inst_from_app=true&id=';
 
