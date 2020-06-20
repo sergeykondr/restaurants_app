@@ -87,7 +87,7 @@ class InstViewScreen extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(vertical: 8),
                             child: Text('Проценты за обслуживание'),
                           ),
-                          Text(snapshot.data.minBanquetPrice) //TODO
+                          Text('asas') //TODO
                         ]),
                         TableRow(children: [
                           Padding(
