@@ -1,4 +1,5 @@
 class InstView {
+  int id;
   String name;
   String address;
   String lat;
@@ -15,7 +16,9 @@ class InstView {
   List<Promotions> promotions;
   List<Halls> halls;
   InstView(
-      {this.name,
+      {
+      this.id,
+      this.name,
       this.address,
       this.lat,
       this.lon,
@@ -31,6 +34,7 @@ class InstView {
       this.promotions,
       this.halls});
   InstView.fromJson(Map<String, dynamic> json) {
+    id = int.parse (json['id']);
     name = json['name'];
     address = json['address'];
     lat = json['lat'];
@@ -65,6 +69,7 @@ class InstView {
   }
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
     data['name'] = this.name;
     data['address'] = this.address;
     data['lat'] = this.lat;
@@ -169,7 +174,7 @@ class Halls {
     maxCapacityBanquetCloser = json['max_capacity_banquet_closer'];
     rent = json['rent'];
     totalCostBanquet = json['total_cost_banquet'];
-    image = json['image'].cast<String>();
+    image = json['image'] != null ? json['image'].cast<String>() : null;
   }
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();

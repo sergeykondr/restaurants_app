@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:restaurants_app/models/inst_list.dart';
 import 'package:restaurants_app/inst_view_screen.dart';
 import 'package:restaurants_app/api.dart';
 
+import 'bloc/favorite_bloc.dart';
 import 'helper_widgets.dart';
 
-
 void main() {
-  runApp(MyApp());
+  runApp(
+    BlocProvider(
+      create: (context) => FavoriteBloc(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -69,10 +75,11 @@ class _InstListState extends State<InstList> {
         return loadingSpin();
       },
     );
-  } 
+  }
 }
 
 Widget instCard(AsyncSnapshot<Inst> snapshot, index, context) {
+  int instId = int.parse(snapshot.data.insts[index].id);
   return Container(
     padding: EdgeInsets.all(10),
     child: Column(
@@ -83,11 +90,11 @@ Widget instCard(AsyncSnapshot<Inst> snapshot, index, context) {
             Expanded(
               child: GestureDetector(
                 onTap: () {
-                  print('click to img');
+                  //print('click to img');
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => InstViewScreen(int.parse(snapshot.data.insts[index].id)), //instId: null
+                      builder: (context) => InstViewScreen(instId), //instId: null
                       // settings: RouteSettings(
                       //   arguments: int.parse(snapshot.data.insts[index].id)
                       // ),
@@ -96,7 +103,8 @@ Widget instCard(AsyncSnapshot<Inst> snapshot, index, context) {
                 },
                 child: Image.network(
                   //wrapper expanded
-                  'https://www.avtobanket.ru' + snapshot.data.insts[index].instMainPhoto,
+                  'https://www.avtobanket.ru' +
+                      snapshot.data.insts[index].instMainPhoto,
                 ),
               ),
             )
@@ -107,9 +115,37 @@ Widget instCard(AsyncSnapshot<Inst> snapshot, index, context) {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(
-                '${snapshot.data.insts[index].name}',
-                style: TextStyle(fontSize: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    '${snapshot.data.insts[index].name}',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  BlocBuilder<FavoriteBloc, FavoriteState>(
+                      builder: (context, FavoriteState state) {
+                    Color _color = Colors.grey;
+                    
+                    if (state is FavoriteKeepIdsState) {
+                      //FavoriteKeepIdsState.
+                      print(state.list);
+                      if (state.list.contains(instId)) {
+                        _color = Colors.red;
+                      }
+                    }
+
+                    return IconButton(
+                      icon: Icon(
+                        Icons.favorite,
+                        color: _color,
+                      ),
+                      onPressed: () {
+                        BlocProvider.of<FavoriteBloc>(context)
+                            .add(FavoriteToggleEvent(instId));
+                      },
+                    );
+                  })
+                ],
               ),
               Text(
                 'от ${snapshot.data.insts[index].minBanquetPrice} р./чел.',

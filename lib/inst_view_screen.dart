@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaurants_app/api.dart';
+import 'package:restaurants_app/bloc/favorite_bloc.dart';
 import 'package:restaurants_app/models/inst_view.dart';
 
 import 'helper_widgets.dart';
@@ -28,10 +30,57 @@ class InstViewScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Image.network( Api.domenUrl + snapshot.data.halls[0].image[0]),
-                    Text(snapshot.data.name),
-                    Text(
-                        'от ${snapshot.data.minBanquetPrice} р. банкетное меню на человека'),
+                    Image.network(
+                        Api.domenUrl + snapshot.data.halls[0].image[0]),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(snapshot.data.name),
+                            Text(
+                                'от ${snapshot.data.minBanquetPrice} р. банкетное меню на человека'),
+                          ],
+                        ),
+                        BlocBuilder<FavoriteBloc, FavoriteState>(
+                            builder: (context, FavoriteState state) {
+                          Color _color = Colors.grey;
+
+                          if (state is FavoriteEmptyState) {
+                            _color = Colors.grey;
+                          }
+
+                          if (state is FavoriteKeepIdsState) {
+                            //FavoriteKeepIdsState.
+                            print(state.list);
+                            if (state.list.contains(this.instId)) {
+                              _color = Colors.red;
+                            }
+                          }
+
+                          //currentColor -> State
+                          //сравнить id текущего ресторана c есть ли он в массиве State?
+                          //  https://bloclibrary.dev/#/fluttertodostutorial
+                          //  final todo = (state as TodosLoadSuccess)
+                          //   .todos
+                          //   .firstWhere((todo) => todo.id == id, orElse: () => null);
+                          //favoriteState.list
+
+                          return IconButton(
+                            icon: Icon(
+                              Icons.favorite,
+                              color: _color,
+                            ),
+                            onPressed: () {
+                              BlocProvider.of<FavoriteBloc>(context)
+                                  .add(FavoriteToggleEvent(this.instId));
+                            },
+                          );
+                        })
+                      ],
+                    ),
+
                     Divider(color: Colors.black),
                     Table(
                       defaultVerticalAlignment:
@@ -40,8 +89,7 @@ class InstViewScreen extends StatelessWidget {
                       children: [
                         TableRow(children: [
                           Icon(Icons.location_on),
-                          Text(
-                              snapshot.data.address)
+                          Text(snapshot.data.address)
                         ]),
                         TableRow(children: [
                           Icon(Icons.widgets),
@@ -61,59 +109,7 @@ class InstViewScreen extends StatelessWidget {
                         ]),
                       ],
                     ),
-                    Divider(color: Colors.black),
-                    Center(
-                        child: Text('Банкетная информация',
-                            style: TextStyle(
-                                fontSize: 20, color: Colors.black87))),
-                    Table(
-                      defaultVerticalAlignment:
-                          TableCellVerticalAlignment.middle,
-                      columnWidths: {0: FixedColumnWidth(140)},
-                      //defaultColumnWidth: FractionColumnWidth(.5),
-                      border: TableBorder(
-                          horizontalInside:
-                              BorderSide(width: 1.0, color: Colors.grey[300])),
-                      children: [
-                        TableRow(children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: Text('Банкетное меню'),
-                          ),
-                          Text('от ${snapshot.data.minBanquetPrice} р. на человека')
-                        ]),
-                        TableRow(children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: Text('Проценты за обслуживание'),
-                          ),
-                          Text('asas') //TODO
-                        ]),
-                        TableRow(children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: Text('Свой алкоголь'),
-                          ),
-                          Text(snapshot.data.minBanquetPrice)
-                        ]),
-                        TableRow(children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: Text('Можно принести с собой'),
-                          ),
-                          Text(
-                              'безалкогольные напитки, фрукты, икру, торт, бесплатно')
-                        ]),
-                        TableRow(children: [
-                          Text('Предоплата'),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: Text(
-                                'первый взнос (бронь) - 50 000 р., оставшаяся сумма за 7 дней до банкета'),
-                          )
-                        ]),
-                      ],
-                    ),
+
                     Divider(color: Colors.black),
                     Center(
                         child: Text('Залы (${snapshot.data.halls.length})',
@@ -122,11 +118,34 @@ class InstViewScreen extends StatelessWidget {
                     Column(
                       children: hallWidget(snapshot.data.halls),
                     ),
-                    Divider(color: Colors.black),
-                    Descripion(),
+                    // Divider(color: Colors.black),
+                    // Descripion(),
                     snapshot.data.promotions != null
                         ? specialsWidget(snapshot.data.promotions)
-                        : Container()
+                        : Container(),
+                    Divider(color: Colors.black),
+                    Center(
+                        child: Text('Банкетная информация',
+                            style: TextStyle(
+                                fontSize: 20, color: Colors.black87))),
+                    attributesWidget(
+                        snapshot.data.primaryAttributes.attributes),
+
+                    Divider(color: Colors.black),
+                    Center(
+                        child: Text('Дополнительная информация',
+                            style: TextStyle(
+                                fontSize: 20, color: Colors.black87))),
+                    attributesWidget(
+                        snapshot.data.additionalAttributes.attributes),
+
+                    Divider(color: Colors.black),
+                    Center(
+                        child: Text('Оборудование',
+                            style: TextStyle(
+                                fontSize: 20, color: Colors.black87))),
+                    attributesWidget(
+                        snapshot.data.technicalAttribuets.attributes),
                   ],
                 ),
               ),
@@ -141,12 +160,38 @@ class InstViewScreen extends StatelessWidget {
   }
 }
 
+Widget attributesWidget(List<Attributes> attributes) {
+  List<TableRow> lines = [];
+  attributes.forEach((Attributes element) {
+    lines.add(
+      TableRow(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text(element.label),
+          ),
+          Text(element.value)
+        ],
+      ),
+    );
+  });
+  return Table(
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      columnWidths: {0: FixedColumnWidth(165)},
+      //defaultColumnWidth: FractionColumnWidth(.5),
+      border: TableBorder(
+        horizontalInside: BorderSide(width: 1.0, color: Colors.grey[300]),
+      ),
+      children: lines);
+}
+
 List<Widget> hallWidget(List<Halls> halls) {
   List<Widget> lines = [];
 
   halls.forEach((hall) {
     lines.add(Column(
       children: <Widget>[
+        hall.image != null ? hallImages(hall.image) : Container(),
         Table(
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           columnWidths: {0: FixedColumnWidth(140)},
@@ -167,7 +212,7 @@ List<Widget> hallWidget(List<Halls> halls) {
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Text('Вместимость на банкете'),
               ),
-              Text(hall.maxCapacityBanquetCloser)
+              Text('до ' + hall.maxCapacityBanquetCloser + ' человек')
             ]),
             TableRow(children: [
               Padding(
@@ -185,7 +230,6 @@ List<Widget> hallWidget(List<Halls> halls) {
             ]),
           ],
         ),
-        hall.image != null ? hallImages(hall.image) : Container(),
       ],
     ));
   });
