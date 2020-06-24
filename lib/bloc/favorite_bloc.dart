@@ -1,7 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-List<int> listIds = [];
-
 ////////////// State ///////////
 class FavoriteState {}
 
@@ -20,6 +18,7 @@ class FavoriteToggleEvent {
 
 ////////////// Bloc ///////////
 class FavoriteBloc extends Bloc<FavoriteToggleEvent, FavoriteState> {
+  List<int> listIds = [];
   @override
   FavoriteEmptyState get initialState => FavoriteEmptyState();
 
@@ -31,7 +30,6 @@ class FavoriteBloc extends Bloc<FavoriteToggleEvent, FavoriteState> {
       } else {
         listIds.remove(event.id);
       }
-
       yield FavoriteKeepIdsState(listIds);
     }
   }

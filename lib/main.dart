@@ -127,8 +127,6 @@ Widget instCard(AsyncSnapshot<Inst> snapshot, index, context) {
                     Color _color = Colors.grey;
                     
                     if (state is FavoriteKeepIdsState) {
-                      //FavoriteKeepIdsState.
-                      print(state.list);
                       if (state.list.contains(instId)) {
                         _color = Colors.red;
                       }

@@ -53,19 +53,11 @@ class InstViewScreen extends StatelessWidget {
 
                           if (state is FavoriteKeepIdsState) {
                             //FavoriteKeepIdsState.
-                            print(state.list);
+                            //print(state.al);
                             if (state.list.contains(this.instId)) {
                               _color = Colors.red;
                             }
                           }
-
-                          //currentColor -> State
-                          //сравнить id текущего ресторана c есть ли он в массиве State?
-                          //  https://bloclibrary.dev/#/fluttertodostutorial
-                          //  final todo = (state as TodosLoadSuccess)
-                          //   .todos
-                          //   .firstWhere((todo) => todo.id == id, orElse: () => null);
-                          //favoriteState.list
 
                           return IconButton(
                             icon: Icon(
