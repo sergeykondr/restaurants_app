@@ -29,6 +29,63 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           title: Text('Рестораны'),
           centerTitle: true,
+          actions: <Widget>[
+            Builder(
+                builder: (BuildContext context) => Stack(
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(Icons.favorite),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    InstViewScreen(2), //instId: null
+                                // settings: RouteSettings(
+                                //   arguments: int.parse(snapshot.data.insts[index].id)
+                                // ),
+                              ),
+                            );
+                          },
+                        ),
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: Material(
+                            type: MaterialType.circle,
+                            elevation: 2.0,
+                            color: Colors.grey[600],
+                            child: Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: BlocBuilder<FavoriteBloc, FavoriteState>(
+                                builder: (BuildContext context,
+                                    FavoriteState state) {
+                                  int _lenght = 0;
+                                  Color _color = Colors.white;
+                                  if (state is FavoriteKeepIdsState) {
+                                    _lenght = state.list.length;
+                                    //_color = Colors.red;
+                                  }
+                                  return Text(
+                                    _lenght.toString(),
+                                    style: TextStyle(
+                                      fontSize: 13.0,
+                                      color: _color,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )),
+            IconButton(
+              icon: Icon(Icons.more_horiz),
+              onPressed: () {},
+            ),
+          ],
         ),
         body: InstList(),
       ),
@@ -94,7 +151,8 @@ Widget instCard(AsyncSnapshot<Inst> snapshot, index, context) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => InstViewScreen(instId), //instId: null
+                      builder: (context) =>
+                          InstViewScreen(instId), //instId: null
                       // settings: RouteSettings(
                       //   arguments: int.parse(snapshot.data.insts[index].id)
                       // ),
@@ -123,25 +181,25 @@ Widget instCard(AsyncSnapshot<Inst> snapshot, index, context) {
                     style: TextStyle(fontSize: 20),
                   ),
                   BlocBuilder<FavoriteBloc, FavoriteState>(
-                      builder: (context, FavoriteState state) {
-                    Color _color = Colors.grey;
-                    
-                    if (state is FavoriteKeepIdsState) {
-                      if (state.list.contains(instId)) {
-                        _color = Colors.red;
-                      }
-                    }
+                    builder: (context, FavoriteState state) {
+                      Color _color = Colors.grey;
 
-                    return IconButton(
-                      icon: Icon(
-                        Icons.favorite,
-                        color: _color,
-                      ),
-                      onPressed: () {
-                        BlocProvider.of<FavoriteBloc>(context)
-                            .add(FavoriteToggleEvent(instId));
-                      },
-                    );
+                      if (state is FavoriteKeepIdsState) {
+                        if (state.list.contains(instId)) {
+                          _color = Colors.red;
+                        }
+                      }
+
+                      return IconButton(
+                        icon: Icon(
+                          Icons.favorite,
+                          color: _color,
+                        ),
+                        onPressed: () {
+                          BlocProvider.of<FavoriteBloc>(context)
+                              .add(FavoriteToggleEvent(instId));
+                        },
+                      );
                   })
                 ],
               ),
