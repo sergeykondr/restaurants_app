@@ -4,7 +4,9 @@ import 'package:restaurants_app/api.dart';
 import 'package:restaurants_app/bloc/favorite_bloc.dart';
 import 'package:restaurants_app/models/inst_view.dart';
 
-import 'helper_widgets.dart';
+import '../helper_widgets.dart';
+
+//import 'helper_widgets.dart';
 //import 'package:restaurants_app/models/inst_view.dart';
 
 class InstViewScreen extends StatelessWidget {

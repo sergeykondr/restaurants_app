@@ -10,6 +10,7 @@ class Api {
   static final String domenUrl     = 'https://www.avtobanket.ru';
   static final String instsListUrl = 'https://www.avtobanket.ru/restorany-dlya-svadby/?get_all_insts=true';
   static final String instByIdUrl  = 'https://www.avtobanket.ru/insts/inst/view?get_inst_from_app=true&id=';
+  static final String instsFavorite = 'https://www.avtobanket.ru/restorany-dlya-svadby/?get_by_ids=';
 
   Future<Inst> fetchInstsList() async {
     //await Future.delayed(const Duration(seconds: 2));
@@ -29,5 +30,15 @@ class Api {
       throw Exception('Error responce: ${responce.reasonPhrase}');
     }
     return InstView.fromJson(json.decode(responce.body));
+  }
+
+  Future<Inst> fetchFavoriteInsts({List list}) async {
+    String url =  instsFavorite + list.join(',');
+    final responce = await http
+        .post(url, headers: {'fromapp': 'flutter/app'});
+    if (responce.statusCode != 200) {
+      throw Exception('Error responce: ${responce.reasonPhrase}');
+    }
+    return Inst.fromJson(json.decode(responce.body));
   }
 }
