@@ -5,6 +5,7 @@ import 'package:restaurants_app/api.dart';
 import 'package:restaurants_app/bloc/favorite_bloc.dart';
 import 'package:restaurants_app/models/inst_list.dart';
 //import 'package:restaurants_app/models/inst_view.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class FavoriteListScreen extends StatelessWidget {
   @override

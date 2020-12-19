@@ -5,17 +5,20 @@ import 'package:restaurants_app/_instCard.dart';
 import 'package:restaurants_app/screens/favorite_list_screen.dart';
 
 import 'package:restaurants_app/models/inst_list.dart';
-import 'package:restaurants_app/screens/inst_view_screen.dart';
 import 'package:restaurants_app/api.dart';
+import 'package:restaurants_app/screens/filter_view_screen.dart';
+import 'package:restaurants_app/services/favorite_repository.dart';
 
 //import '_bottom_nav_bar.dart';
 import 'bloc/favorite_bloc.dart';
 import 'helper_widgets.dart';
 
 void main() {
+  final favoritsRepository = FavoritsRepository();
+
   runApp(
     BlocProvider<FavoriteBloc>(
-      create: (context) => FavoriteBloc(),
+      create: (context) => FavoriteBloc(favoritsRepository)..add(FavoriteInitEvent()),
       child: MyApp(),
     ),
   );
@@ -83,7 +86,15 @@ class MyApp extends StatelessWidget {
                     )),
             IconButton(
               icon: Icon(Icons.filter_list),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>  FiltersViewScreen(),
+                              ),
+                            );
+
+              },
             ),
           ],
         ),

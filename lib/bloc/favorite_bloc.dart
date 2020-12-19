@@ -1,9 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:restaurants_app/services/favorite_repository.dart';
 
 ////////////// States ///////////
-class FavoriteState {}
-
+abstract class FavoriteState {}
 class FavoriteLoadingState extends FavoriteState {}
 
 class FavoriteEmptyState extends FavoriteState {}
@@ -14,7 +13,7 @@ class FavoriteKeepIdsState extends FavoriteState {
 }
 
 ////////////// Events ///////////
-class FavoriteEvent {}
+abstract class FavoriteEvent {}
 
 class FavoriteToggleEvent extends FavoriteEvent {
   final int id;
@@ -25,29 +24,28 @@ class FavoriteInitEvent extends FavoriteEvent {}
 
 ////////////// Bloc ///////////
 class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
-  List<int> listIds = [];
+  //TODO: а что если этот список хранить не здесь?
+  List<int> favoriteInstIds = [];
+  
+
+  FavoritsRepository favoritsRepository;
+
+  FavoriteBloc(this.favoritsRepository);
+
   @override
   FavoriteState get initialState => FavoriteLoadingState();
 
-  // Stream<FavoriteState> preLoading() async* {
-  //   _setList().then((value) async* {
-  //     if (value.isNotEmpty) {
-  //       listIds = value;
-  //       yield FavoriteKeepIdsState(listIds);
-  //     } else {
-  //       yield FavoriteEmptyState;
-  //     }
-  //   });
-  // }
-
   @override
   Stream<FavoriteState> mapEventToState(FavoriteEvent event) async* {
+    print('mapEventToState called');
     if (event is FavoriteToggleEvent) {
       print(0);
-      if (listIds.isEmpty) {
+      if (favoriteInstIds.isEmpty) {
         print(1);
-        List<int> listIdsFromShared = await _getList();
-        yield FavoriteKeepIdsState(listIdsFromShared);
+        //TODO: проверить сделать обработку если массив пуст
+
+        // List<int> listIdsFromShared = await _getList();
+        // yield FavoriteKeepIdsState(listIdsFromShared);
         // _getList().then((value) async {
         //   print(222);
         //   if (value.isNotEmpty) {
@@ -57,60 +55,24 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
         // });
         // yield FavoriteKeepIdsState(listIds);
       }
-      else if (!listIds.contains(event.id)) {
+      else if (!favoriteInstIds.contains(event.id)) {
         print(2);
-        listIds.add(event.id);
-        _setList();
-        yield FavoriteKeepIdsState(listIds);
+        favoriteInstIds.add(event.id);
+        favoritsRepository.setAllFavorits(favoriteInstIds);
+        //setList( );
+        yield FavoriteKeepIdsState(favoriteInstIds);
       } else {
         print(3);
-        listIds.remove(event.id);
-        yield FavoriteKeepIdsState(listIds);
+        favoriteInstIds.remove(event.id);
+        favoritsRepository.setAllFavorits(favoriteInstIds);
+        yield FavoriteKeepIdsState(favoriteInstIds);
       }
-      //print(1);
-
-      
-      // Future<List<int>> listIdsFromShared = _getList();//лишнее
-
-      //2 способ
-      // List<int> listIdsFromShared = await _getList();
-      // yield FavoriteKeepIdsState(listIdsFromShared);
-
-      //print('2');
-      //print(value);
-      //print('3');
-
-      
-      //print(listIdsFromShared);
-
-      //yield FavoriteKeepIdsState(listIds);
-
+    } else if (event is FavoriteInitEvent) {
+        favoriteInstIds = await favoritsRepository.getAllFavorits(); //ждет выполнения данной функции и дальше код не выполняется
+        yield FavoriteKeepIdsState(favoriteInstIds);
+        //  _getList().then((value) async* {
+        //      yield FavoriteKeepIdsState(value);
+        //  });
     }
-  }
-
-  Future<List<int>> _getList() async {
-    print('getList');
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> myList = prefs.getStringList('myList') ?? List<String>();
-    List<int> myOriginaList = myList.map((i) => int.parse(i)).toList();
-    
-    //myOriginaList = [1, 2];
-    print(333);
-    print("get list: $myOriginaList");
-    listIds = myOriginaList;
-    return myOriginaList;
-  }
-
-  Future<void> _setList() async {
-    print('setList');
-    List<String> myListOfStrings = listIds.map((i) => i.toString()).toList();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //List<String> myList = prefs.getStringList('myList') ?? List<String>();
-    //List<int> myOriginaList = myList.map((i) => int.parse(i)).toList();
-    //print('Your list  $myOriginaList');
-    //629, 617
-    await prefs.setStringList('myList', myListOfStrings);
-
-    //return myOriginaList;
   }
 }
