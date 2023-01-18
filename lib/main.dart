@@ -18,7 +18,8 @@ void main() {
 
   runApp(
     BlocProvider<FavoriteBloc>(
-      create: (context) => FavoriteBloc(favoritsRepository)..add(FavoriteInitEvent()),
+      create: (context) =>
+          FavoriteBloc(favoritsRepository)..add(FavoriteInitEvent()),
       child: MyApp(),
     ),
   );
@@ -38,64 +39,73 @@ class MyApp extends StatelessWidget {
           centerTitle: true,
           actions: <Widget>[
             Builder(
-                builder: (BuildContext context) => Stack(
-                      children: <Widget>[
-                        IconButton(
-                          icon: Icon(Icons.favorite),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => FavoriteListScreen(),
-                              ),
-                            );
-                          },
-                        ),
-                        Positioned(
-                          top: 0,
-                          right: 0,
-                          child: Material(
-                            type: MaterialType.circle,
-                            elevation: 2.0,
-                            color: Colors.grey[600],
-                            child: Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: BlocBuilder<FavoriteBloc, FavoriteState>(
-                                builder: (BuildContext context,
-                                    FavoriteState state) {
-                                  int _lenght = 0;
-                                  Color _color = Colors.white;
-                                  if (state is FavoriteKeepIdsState) {
-                                    _lenght = state.list.length;
-                                    //_color = Colors.red;
-                                  }
-                                  return Text(
-                                    _lenght.toString(),
-                                    style: TextStyle(
-                                      fontSize: 13.0,
-                                      color: _color,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
+              builder: (BuildContext context) => 
+              
+              Row(
+                children:[
+                  Stack(
+
+                  children: <Widget>[
+                    IconButton(
+                      icon: Icon(Icons.favorite),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FavoriteListScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: Material(
+                        type: MaterialType.circle,
+                        elevation: 2.0,
+                        color: Colors.grey[600],
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: BlocBuilder<FavoriteBloc, FavoriteState>(
+                            builder: (BuildContext context, FavoriteState state) {
+                              int _lenght = 0;
+                              Color _color = Colors.white;
+                              if (state is FavoriteKeepIdsState) {
+                                _lenght = state.list.length;
+                                //_color = Colors.red;
+                              }
+                              return Text(
+                                _lenght.toString(),
+                                style: TextStyle(
+                                  fontSize: 13.0,
+                                  color: _color,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              );
+                            },
                           ),
                         ),
-                      ],
-                    )),
-            IconButton(
-              icon: Icon(Icons.filter_list),
-              onPressed: () {
-                Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>  FiltersViewScreen(),
-                              ),
-                            );
-
-              },
+                      ),
+                    ),
+                    
+                  ],
+                ),
+                IconButton(
+                      icon: Icon(Icons.filter_list),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FiltersViewScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                ],
+              ),
+              
             ),
+            
           ],
         ),
         body: InstList(),

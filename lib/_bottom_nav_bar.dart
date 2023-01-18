@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 
 import 'screens/favorite_list_screen.dart';
@@ -52,18 +50,16 @@ class BottomNavBar extends StatelessWidget {
                 );
               }),
           IconButton(
-            icon: Icon(
-              Icons.favorite,
-              color: Colors.orange,
-              size: 28,
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => FavoriteListScreen()),
-              );
-            },
-          ),
+              icon: Icon(
+                Icons.favorite,
+                color: Colors.orange,
+                size: 28,
+              ),
+              onPressed: () {
+                Route route = MaterialPageRoute(
+                    builder: (context) => FavoriteListScreen());
+                Navigator.push(context, route);
+              },),
         ],
       ),
     );
